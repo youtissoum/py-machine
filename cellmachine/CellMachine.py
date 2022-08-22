@@ -16,6 +16,8 @@ CELLS: list[Cell] = [Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immob
 class CellMachine():
     cells: Grid = Grid(1, 1)
 
+    tickAmount = 0
+
     ## SETUP
     def __init__(self, preview_scale = 2) -> None:
         self.width = 0
@@ -119,8 +121,8 @@ class CellMachine():
                 continue
             cellX = math.floor(rawCell[1] % gridWidth)
             cellY = math.floor(rawCell[1] / gridWidth)
-            if rawCell[0] % 2 == 1:
-                placeables.append((cellX, cellY))
+            # if rawCell[0] % 2 == 1:
+            #     placeables.cells.append((cellX, cellY))
             cellType = math.floor((rawCell[0] / 2) % 9)
             cellDirection = math.floor(rawCell[0] / 18)
             newCells.cells.append(CELLS[cellType](cellX, cellY, cellDirection))
@@ -214,7 +216,10 @@ class CellMachine():
                     ## GET CELLS OF DIRECTION
                     cells_to_tick: list[TickedCell] = []
                     for cell in self.cells.cells:
-                        cells_to_tick.append(cell) if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()
+                        if cell_type_to_tick == Generator or cell_type_to_tick == Mover:
+                            cells_to_tick.append(cell) if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()
+                        else:
+                            cells_to_tick.append(cell) if cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()
 
                     if cells_to_tick == []:
                         continue
@@ -232,6 +237,7 @@ class CellMachine():
                         if cell.tickNum != tickNum:
                             self.cells = cell.step(self.cells)
                             cell.tickNum = tickNum
+            self.tickAmount += 1
 
     def reset(self):
         self.cells = self.resetCells

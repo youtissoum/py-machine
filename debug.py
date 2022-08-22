@@ -1,13 +1,31 @@
+import math
 from cellmachine.CellMachine import CellMachine
 from PIL import Image
+import time
 
+before = time.time()
 cellmachine = CellMachine()
 
 # cellmachine.parse_code(input("Please enter your code : "))
-cellmachine.parse_code("V3;1q;1q;{(0(WT)Y(1m(1m)S{{a(1p(1p)2(1n(1k)C9r9999CC(1o(1g)6rJVJtJJ$r(2Q(1i)r$r99t9$G(1p(1h)v1}1}$rU(5v(1j)${dfd(aX(1o)(1o(1p)(0(%h);Manticore V1;")
+cellmachine.parse_code("V3;1q;1q;{(0(&B)SA(1p(1o)0i2(++(&C)(0(2R);;;0")
 
-cellmachine.tick(int(input("Please enter the amount of ticks : ")))
+# timed
+before = time.time()
+cellmachine.tick(10)
+print(round(time.time() - before, 3))
 
-img: Image = cellmachine.view()
+# almost 4 minutes for nuke in 100x100 map
 
-img.save("out.png")
+cellmachine.view().save("out.png")
+
+input()
+
+# while True:
+#     cellmachine.tick(1)
+#     # cellmachine.tick(int(input("Please enter the amount of ticks : ")))
+
+#     img: Image = cellmachine.view()
+
+#     img.save("out.png")
+
+#     input()

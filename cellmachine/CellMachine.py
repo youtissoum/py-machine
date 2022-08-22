@@ -1,6 +1,8 @@
+from copy import copy
 import math
 import operator
 import random
+import time
 from cellmachine.base74 import b74_decode
 from PIL import Image
 from cellmachine.Enums import Direction
@@ -12,6 +14,18 @@ TEXTURE_SIZE = 16
 SUBTICKING_ORDER: list[TickedCell] = (Generator, C_Spinner, CC_Spinner, Mover)
 SUBTICKING_DIRECTION = (Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN)
 CELLS: list[Cell] = [Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash]
+
+bg = Image.open(f'{TEXTURE_PATH}background.png')
+generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.FLIP_TOP_BOTTOM)
+C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
+CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
+mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.FLIP_TOP_BOTTOM)
+slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.FLIP_TOP_BOTTOM)
+push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.FLIP_TOP_BOTTOM)
+immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.FLIP_TOP_BOTTOM)
+enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.FLIP_TOP_BOTTOM)
+trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.FLIP_TOP_BOTTOM)
+placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.FLIP_TOP_BOTTOM)
 
 class CellMachine():
     cells: Grid = Grid(1, 1)
@@ -29,6 +43,8 @@ class CellMachine():
         self.SCALE = preview_scale
 
         self.resetCells = []
+
+        self.change_size((1, 1))
 
     def do_nothing(self):
         pass
@@ -145,20 +161,23 @@ class CellMachine():
         self.placeables = level[1]
         self.name = level[2]
 
+        self.change_size((self.width, self.height))
+
         self.resetCells = level[0]
 
+    def change_size(self, size: tuple[int, int]):
+        width = self.width * TEXTURE_SIZE
+        height = self.height * TEXTURE_SIZE
+
+        img = Image.new(mode="RGB", size=(int(width), int(height)))
+
+        for i in range(0, width, TEXTURE_SIZE):
+            for j in range(0, height, TEXTURE_SIZE):
+                img.paste(bg, (i, j))
+
+        self.prerendered_bg = img
+
     def view(self):
-        bg = Image.open(f'{TEXTURE_PATH}background.png')
-        generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.FLIP_TOP_BOTTOM)
-        C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-        CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-        mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.FLIP_TOP_BOTTOM)
-        slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.FLIP_TOP_BOTTOM)
-        push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.FLIP_TOP_BOTTOM)
-        immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.FLIP_TOP_BOTTOM)
-        enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.FLIP_TOP_BOTTOM)
-        trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.FLIP_TOP_BOTTOM)
-        placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.FLIP_TOP_BOTTOM)
         all_cells = [generator, C_spinner, CC_spinner, mover, slide, push, immobile, enemy, trash]
 
         width = self.width
@@ -167,11 +186,7 @@ class CellMachine():
         width  *= TEXTURE_SIZE
         height *= TEXTURE_SIZE
 
-        img = Image.new(mode="RGB", size=(int(width), int(height)))
-
-        for i in range(0, width, TEXTURE_SIZE):
-            for j in range(0, height, TEXTURE_SIZE):
-                img.paste(bg, (i, j))
+        img = deepcopy(self.prerendered_bg)
 
         for placeable_data in self.placeables:
             img.paste(placeable, (placeable_data[0] * TEXTURE_SIZE, placeable_data[1] * TEXTURE_SIZE))
@@ -180,18 +195,6 @@ class CellMachine():
             cell_to_paste = all_cells[cell.CELL_ID]
 
             img.paste(cell_to_paste.rotate(cell.direction * 90), (cell.x * TEXTURE_SIZE, cell.y * TEXTURE_SIZE))
-
-        bg.close()
-        generator.close()
-        C_spinner.close()
-        CC_spinner.close()
-        mover.close()
-        slide.close()
-        push.close()
-        immobile.close()
-        enemy.close()
-        trash.close()
-        placeable.close()
 
         if self.SCALE == 0:
             return(img)
@@ -241,3 +244,16 @@ class CellMachine():
 
     def reset(self):
         self.cells = self.resetCells
+
+    def unload(self):
+        bg.close()
+        generator.close()
+        C_spinner.close()
+        CC_spinner.close()
+        mover.close()
+        slide.close()
+        push.close()
+        immobile.close()
+        enemy.close()
+        trash.close()
+        placeable.close()

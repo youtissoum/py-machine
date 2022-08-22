@@ -47,7 +47,7 @@ class Cell():
         elif direction == Direction.DOWN:
             new_y -= 1
 
-        if new_x > grid.width or new_y > grid.height:
+        if new_x >= grid.width or new_y >= grid.height or new_x < 0 or new_y < 0:
             return ((False, grid, 0))
 
         cell_at_location: Cell = grid.get(new_x, new_y)
@@ -120,6 +120,10 @@ class Generator(TickedCell):
             elif cell_at_position.CELL_NAME == "enemy":
                 grid.cells.remove(cell_at_position)
                 return grid
+            elif cell_at_position.CELL_NAME == "slide":
+                if cell_at_position.direction != self.direction and \
+                    cell_at_position.direction != get_opposite_direction(self.direction):
+                    return grid
             move_result, grid, bias = cell_at_position.move_in_direction(self.direction, grid, 0)
             if not move_result or bias < 0:
                 return grid
@@ -167,9 +171,9 @@ class CC_Spinner(TickedCell):
     def step(self, grid: Grid):
         to_new_rotation = {
             Direction.RIGHT: Direction.UP,
-            Direction.UP: Direction.LEFT,
+            Direction.DOWN: Direction.RIGHT,
             Direction.LEFT: Direction.DOWN,
-            Direction.DOWN: Direction.RIGHT
+            Direction.UP: Direction.LEFT
         }
 
         left_cell: Cell = grid.get(self.x - 1, self.y)

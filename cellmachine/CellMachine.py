@@ -114,20 +114,20 @@ class CellMachine():
             dataIndex += 1
 
         newCells: Grid = Grid(gridWidth, gridHeight)
-        placeables: Grid[tuple[int, int]] = Grid(gridWidth, gridHeight)
+        placeables: list[tuple[int, int]] = []
 
         for rawCell in rawCells:
             if rawCell[0] >= 72:
                 continue
             cellX = math.floor(rawCell[1] % gridWidth)
             cellY = math.floor(rawCell[1] / gridWidth)
-            # if rawCell[0] % 2 == 1:
-            #     placeables.cells.append((cellX, cellY))
+            if rawCell[0] % 2 == 1:
+                placeables.append((cellX, cellY))
             cellType = math.floor((rawCell[0] / 2) % 9)
             cellDirection = math.floor(rawCell[0] / 18)
             newCells.cells.append(CELLS[cellType](cellX, cellY, cellDirection))
 
-        return((newCells, [], arguments[4]))
+        return((newCells, placeables, arguments[4]))
 
     def parse_code(self, code: str):
         if code.startswith("V1"):
@@ -142,7 +142,7 @@ class CellMachine():
         self.cells = level[0]
         self.width = self.cells.width
         self.height = self.cells.height
-        self.placeables = level[2]
+        self.placeables = level[1]
         self.name = level[2]
 
         self.resetCells = level[0]

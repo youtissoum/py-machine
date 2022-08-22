@@ -64,8 +64,8 @@ class Cell():
                 grid.cells.remove(self)
                 return ((True, grid, bias))
             elif cell_at_location.CELL_NAME == "slide":
-                if cell_at_location.direction != self.direction and \
-                    cell_at_location.direction != get_opposite_direction(self.direction):
+                if cell_at_location.direction != direction and \
+                    cell_at_location.direction != get_opposite_direction(direction):
                     return ((False, grid, bias))
             move_result, grid, bias = cell_at_location.move_in_direction(direction, grid, bias=bias)
             if not move_result:

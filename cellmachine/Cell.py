@@ -115,7 +115,7 @@ class Generator(TickedCell):
 
         cell_at_position: Cell = grid.get(cell_position[0], cell_position[1])
         if cell_at_position:
-            if cell_at_position.CELL_NAME == "trash":
+            if cell_at_position.CELL_NAME == "trash" or cell_at_position.CELL_NAME == "immobile":
                 return grid
             elif cell_at_position.CELL_NAME == "enemy":
                 grid.cells.remove(cell_at_position)

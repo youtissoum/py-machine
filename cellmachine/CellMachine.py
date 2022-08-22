@@ -133,12 +133,12 @@ class CellMachine():
         placeables: list[tuple[int, int]] = []
 
         for rawCell in rawCells:
-            if rawCell[0] >= 72:
-                continue
             cellX = math.floor(rawCell[1] % gridWidth)
             cellY = math.floor(rawCell[1] / gridWidth)
             if rawCell[0] % 2 == 1:
                 placeables.append((cellX, cellY))
+            if rawCell[0] >= 72:
+                continue
             cellType = math.floor((rawCell[0] / 2) % 9)
             cellDirection = math.floor(rawCell[0] / 18)
             newCells.cells.append(CELLS[cellType](cellX, cellY, cellDirection))

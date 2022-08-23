@@ -1,7 +1,7 @@
 from cellmachine.Enums import Direction
 from copy import deepcopy
 
-from cellmachine.Utils import get_opposite_direction
+from cellmachine.Utils import get_opposite_direction, get_loc_from_direction
 
 class Grid():
     width = 0
@@ -28,56 +28,46 @@ class Cell():
     direction = Direction.RIGHT
     tickNum = 0
 
-    def move_in_direction(self, direction, grid: Grid, bias=-1):
-        new_x = self.x
-        new_y = self.y
-
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
         if self.CELL_NAME == "mover":
             if direction == self.direction:
                 bias += 1
             elif direction == get_opposite_direction(self.direction):
                 bias -= 1
 
-        if direction == Direction.RIGHT:
-            new_x += 1
-        elif direction == Direction.LEFT:
-            new_x -= 1
-        elif direction == Direction.UP:
-            new_y += 1
-        elif direction == Direction.DOWN:
-            new_y -= 1
+        new_x, new_y = get_loc_from_direction(self.x, self.y, direction)
 
         if new_x >= grid.width or new_y >= grid.height or new_x < 0 or new_y < 0:
-            return ((False, grid, 0))
+            return False, grid, 0
 
         cell_at_location: Cell = grid.get(new_x, new_y)
         if cell_at_location:
             if cell_at_location == self:
                 exit()
-            if cell_at_location.CELL_NAME == "immobile":
-                return ((False, grid, bias))
-            elif cell_at_location.CELL_NAME == "trash":
-                grid.cells.remove(self)
-                return ((True, grid, bias))
-            elif cell_at_location.CELL_NAME == "enemy":
-                grid.cells.remove(cell_at_location)
-                grid.cells.remove(self)
-                return ((True, grid, bias))
-            elif cell_at_location.CELL_NAME == "slide":
-                if cell_at_location.direction != direction and \
-                    cell_at_location.direction != get_opposite_direction(direction):
-                    return ((False, grid, bias))
-            move_result, grid, bias = cell_at_location.move_in_direction(direction, grid, bias=bias)
+            # if cell_at_location.CELL_NAME == "immobile":
+            #     return False, grid, bias
+            # elif cell_at_location.CELL_NAME == "trash":
+            #     grid.cells.remove(self)
+            #     return True, grid, bias
+            # elif cell_at_location.CELL_NAME == "enemy":
+            #     grid.cells.remove(cell_at_location)
+            #     grid.cells.remove(self)
+            #     return True, grid, bias
+            # elif cell_at_location.CELL_NAME == "slide":
+            #     if cell_at_location.direction != direction and \
+            #         cell_at_location.direction != get_opposite_direction(direction):
+            #         return False, grid, bias
+            move_result, grid, bias = cell_at_location.move_in_direction(direction, grid, bias=bias, previous_cell=self)
             if not move_result:
-                return ((False, grid, bias))
+                return False, grid, bias
 
         if bias < 0:
-            return ((False, grid, bias))
+            return False, grid, bias
 
         self.x = new_x
         self.y = new_y
 
-        return ((True, grid, bias))
+        return True, grid, bias
 
     def __init__(self, x, y, direction) -> None:
         self.x = x
@@ -93,44 +83,38 @@ class Generator(TickedCell):
     CELL_NAME = "generator"
 
     def step(self, grid: Grid):
-        cell_to_copy = None
-        if self.direction == Direction.RIGHT:
-            cell_to_copy = deepcopy(grid.get(self.x - 1, self.y))
-            cell_position = (self.x + 1, self.y)
-        elif self.direction == Direction.LEFT:
-            cell_to_copy = deepcopy(grid.get(self.x + 1, self.y))
-            cell_position = (self.x - 1, self.y)
-        elif self.direction == Direction.DOWN:
-            cell_to_copy = deepcopy(grid.get(self.x, self.y + 1))
-            cell_position = (self.x, self.y - 1)
-        elif self.direction == Direction.UP:
-            cell_to_copy = deepcopy(grid.get(self.x, self.y - 1))
-            cell_position = (self.x, self.y + 1)
+        new_cell = None
+        # if self.direction == Direction.RIGHT:
+        #     cell_to_copy = deepcopy(grid.get(self.x - 1, self.y))
+        #     cell_position = (self.x + 1, self.y)
+        # elif self.direction == Direction.LEFT:
+        #     cell_to_copy = deepcopy(grid.get(self.x + 1, self.y))
+        #     cell_position = (self.x - 1, self.y)
+        # elif self.direction == Direction.DOWN:
+        #     cell_to_copy = deepcopy(grid.get(self.x, self.y + 1))
+        #     cell_position = (self.x, self.y - 1)
+        # elif self.direction == Direction.UP:
+        #     cell_to_copy = deepcopy(grid.get(self.x, self.y - 1))
+        #     cell_position = (self.x, self.y + 1)
 
-        if not cell_to_copy:
+        new_cell = deepcopy(grid.get(*get_loc_from_direction(self.x, self.y, get_opposite_direction(self.direction))))
+        cell_position = get_loc_from_direction(self.x, self.y, self.direction)
+
+        if not new_cell:
             return grid
 
-        if cell_position[0] > grid.width or cell_position[1] > grid.height:
+        if cell_position[0] >= grid.width or cell_position[1] >= grid.height or cell_position[0] < 0 or cell_position[1] < 0:
             return grid
 
-        cell_at_position: Cell = grid.get(cell_position[0], cell_position[1])
+        cell_at_position: Cell = grid.get(*cell_position)
         if cell_at_position:
-            if cell_at_position.CELL_NAME == "trash" or cell_at_position.CELL_NAME == "immobile":
-                return grid
-            elif cell_at_position.CELL_NAME == "enemy":
-                grid.cells.remove(cell_at_position)
-                return grid
-            elif cell_at_position.CELL_NAME == "slide":
-                if cell_at_position.direction != self.direction and \
-                    cell_at_position.direction != get_opposite_direction(self.direction):
-                    return grid
             move_result, grid, bias = cell_at_position.move_in_direction(self.direction, grid, 0)
             if not move_result or bias < 0:
                 return grid
         
-        cell_to_copy.x = cell_position[0]
-        cell_to_copy.y = cell_position[1]
-        grid.cells.append(cell_to_copy)
+        new_cell.x = cell_position[0]
+        new_cell.y = cell_position[1]
+        grid.cells.append(new_cell)
 
         return grid
 
@@ -206,6 +190,13 @@ class Slide(Cell):
     CELL_ID = 4
     CELL_NAME = "slide"
 
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
+        if self.direction != direction and \
+            self.direction != get_opposite_direction(direction):
+            return False, grid, 0
+        else:
+            return super().move_in_direction(direction, grid, bias, self)
+
 class Push(Cell):
     CELL_ID = 5
     CELL_NAME = "push"
@@ -214,10 +205,26 @@ class Immobile(Cell):
     CELL_ID = 6
     CELL_NAME = "immobile"
 
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
+        return False, grid, 0
+
 class Enemy(Cell):
     CELL_ID = 7
     CELL_NAME = "enemy"
 
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
+        if previous_cell:
+            grid.cells.remove(previous_cell)
+
+        grid.cells.remove(self)
+        return True, grid, bias
+
 class Trash(Cell):
     CELL_ID = 8
     CELL_NAME = "trash"
+
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell: Cell=None) -> tuple[bool, Grid, int]:
+        if previous_cell:
+            grid.cells.remove(previous_cell)
+
+        return True, grid, bias

@@ -6,8 +6,8 @@ import time
 before = time.time()
 cellmachine = CellMachine()
 
-# cellmachine.parse_code(input("Please enter your code : "))
-cellmachine.parse_code("V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);Manticore V1;;0")
+cellmachine.parse_code(input("Please enter your code : "))
+# cellmachine.parse_code("V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);Manticore V1;;0")
 
 tick_amount = int(input("Enter the amount of ticks : "))
 # timed

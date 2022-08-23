@@ -12,6 +12,8 @@ class Grid():
         self.width = width
         self.height = height
 
+        self.cells = []
+
     def get(self, x, y):
         for cell in self.cells:
             if cell.x == x and cell.y == y:

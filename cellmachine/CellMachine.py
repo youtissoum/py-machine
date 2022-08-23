@@ -39,6 +39,7 @@ class CellMachine():
         self.cells = Grid(1, 1)
         self.placeables = []
         self.name = ""
+        self.tickAmount = 0
 
         self.SCALE = preview_scale
 
@@ -205,7 +206,7 @@ class CellMachine():
         else:
             nextWidth = math.floor(width * self.SCALE)
             nextHeight = math.floor(height * self.SCALE)
-            scaledImg = img.resize(size=(nextWidth, nextHeight), resample=Image.NEAREST)
+            scaledImg = img.resize(size=(nextWidth, nextHeight), resample=Image.Resampling.NEAREST)
             return(scaledImg.transpose(1))
 
     ## TICKING

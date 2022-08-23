@@ -244,10 +244,6 @@ class CellMachine():
                         if cell.tickNum != tickNum:
                             self.cells = cell.step(self.cells)
                             cell.tickNum = tickNum
-
-                    # if self.tickAmount > 0:
-                    #     print(cell_type_to_tick, cell_direction_to_tick)
-                    #     self.view().show()
             self.tickAmount += 1
 
     def reset(self):

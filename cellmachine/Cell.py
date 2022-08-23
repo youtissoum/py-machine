@@ -29,12 +29,6 @@ class Cell():
     tickNum = 0
 
     def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
-        if self.CELL_NAME == "mover":
-            if direction == self.direction:
-                bias += 1
-            elif direction == get_opposite_direction(self.direction):
-                bias -= 1
-
         new_x, new_y = get_loc_from_direction(self.x, self.y, direction)
 
         if new_x >= grid.width or new_y >= grid.height or new_x < 0 or new_y < 0:
@@ -44,19 +38,6 @@ class Cell():
         if cell_at_location:
             if cell_at_location == self:
                 exit()
-            # if cell_at_location.CELL_NAME == "immobile":
-            #     return False, grid, bias
-            # elif cell_at_location.CELL_NAME == "trash":
-            #     grid.cells.remove(self)
-            #     return True, grid, bias
-            # elif cell_at_location.CELL_NAME == "enemy":
-            #     grid.cells.remove(cell_at_location)
-            #     grid.cells.remove(self)
-            #     return True, grid, bias
-            # elif cell_at_location.CELL_NAME == "slide":
-            #     if cell_at_location.direction != direction and \
-            #         cell_at_location.direction != get_opposite_direction(direction):
-            #         return False, grid, bias
             move_result, grid, bias = cell_at_location.move_in_direction(direction, grid, bias=bias, previous_cell=self)
             if not move_result:
                 return False, grid, bias
@@ -83,20 +64,6 @@ class Generator(TickedCell):
     CELL_NAME = "generator"
 
     def step(self, grid: Grid):
-        new_cell = None
-        # if self.direction == Direction.RIGHT:
-        #     cell_to_copy = deepcopy(grid.get(self.x - 1, self.y))
-        #     cell_position = (self.x + 1, self.y)
-        # elif self.direction == Direction.LEFT:
-        #     cell_to_copy = deepcopy(grid.get(self.x + 1, self.y))
-        #     cell_position = (self.x - 1, self.y)
-        # elif self.direction == Direction.DOWN:
-        #     cell_to_copy = deepcopy(grid.get(self.x, self.y + 1))
-        #     cell_position = (self.x, self.y - 1)
-        # elif self.direction == Direction.UP:
-        #     cell_to_copy = deepcopy(grid.get(self.x, self.y - 1))
-        #     cell_position = (self.x, self.y + 1)
-
         new_cell = deepcopy(grid.get(*get_loc_from_direction(self.x, self.y, get_opposite_direction(self.direction))))
         cell_position = get_loc_from_direction(self.x, self.y, self.direction)
 
@@ -181,6 +148,14 @@ class CC_Spinner(TickedCell):
 class Mover(TickedCell):
     CELL_ID = 3
     CELL_NAME = "mover"
+
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
+        if direction == self.direction:
+            bias += 1
+        elif direction == get_opposite_direction(self.direction):
+            bias -= 1
+
+        return super().move_in_direction(direction, grid, bias, previous_cell)
 
     def step(self, grid: Grid):
         result, grid, bias = self.move_in_direction(self.direction, grid)

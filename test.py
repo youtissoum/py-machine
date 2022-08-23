@@ -1,8 +1,6 @@
 import unittest
-from cellmachine.Cell import Grid
 
 from cellmachine.CellMachine import CellMachine
-from PIL import Image
 
 assertion = ""
 
@@ -35,5 +33,13 @@ class ManticoreV1Test(unittest.TestCase):
         cellmachine.tick(2)
         self.assertEqual(get_cell_data(cellmachine.cells.cells), [(4, 'slide', (44, 46), 0), (4, 'slide', (45, 46), 3), (4, 'slide', (46, 46), 0), (4, 'slide', (47, 46), 0), (4, 'slide', (48, 46), 2), (4, 'slide', (49, 46), 0), (4, 'slide', (43, 47), 1), (4, 'slide', (44, 47), 0), (1, 'c_spinner', (45, 47), 3), (4, 'slide', (46, 47), 0), (5, 'push', (47, 47), 1), (4, 'slide', (48, 47), 2), (4, 'slide', (49, 47), 2), (4, 'slide', (50, 47), 3), (4, 'slide', (51, 47), 1), (4, 'slide', (44, 48), 1), (4, 'slide', (45, 48), 1), (4, 'slide', (46, 48), 1), (4, 'slide', (47, 48), 0), (4, 'slide', (48, 48), 0), (5, 'push', (49, 48), 1), (4, 'slide', (50, 48), 0), (4, 'slide', (51, 48), 3), (6, 'immobile', (44, 49), 1), (0, 'generator', (45, 49), 0), (0, 'generator', (47, 49), 0), (4, 'slide', (49, 49), 3), (4, 'slide', (50, 49), 1), (4, 'slide', (45, 50), 3), (6, 'immobile', (47, 50), 0), (7, 'enemy', (48, 50), 0), (6, 'immobile', (49, 50), 0), (6, 'immobile', (48, 51), 0), (6, 'immobile', (46, 49), 1), (6, 'immobile', (48, 49), 1)], "ticking did not work")
 
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(ManticoreV1Test('test_v1_import'))
+    suite.addTest(ManticoreV1Test('test_v3_import'))
+    suite.addTest(ManticoreV1Test('test_ticking'))
+    return suite
+
 if __name__ == '__main__':
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())

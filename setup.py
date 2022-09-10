@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setuptools.setup(
-    version='1.0.2',
+    version='1.0.1',
     description="Module to run cell machine",
     long_description=readme(),
     classifiers=[

@@ -1,4 +1,4 @@
-from cellmachine.Enums import Direction
+from .Enums import Direction
 
 def do_nothing():
     pass

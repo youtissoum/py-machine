@@ -1,7 +1,7 @@
-from cellmachine.Enums import Direction
+from .Enums import Direction
 from copy import deepcopy
 
-from cellmachine.Utils import get_opposite_direction, get_loc_from_direction
+from .Utils import get_opposite_direction, get_loc_from_direction
 
 class Grid():
     width = 0

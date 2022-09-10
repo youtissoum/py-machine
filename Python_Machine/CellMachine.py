@@ -3,10 +3,10 @@ import math
 import operator
 import random
 import time
-from cellmachine.base74 import b74_decode
+from .base74 import b74_decode
 from PIL import Image
-from cellmachine.Enums import Direction
-from cellmachine.Cell import *
+from .Enums import Direction
+from .Cell import *
 
 TEXTURE_PATH = __file__.removesuffix("CellMachine.py").replace("\\", "/") + "textures/"
 TEXTURE_SIZE = 16

@@ -5,16 +5,16 @@ def readme():
         return f.read()
 
 setuptools.setup(
-    version='1.0.0',
+    version='1.0.1',
     description="Module to run cell machine",
     long_description=readme(),
     classifiers=[
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.10.6'
+        'Programming Language :: Python :: 3.10'
     ],
     keywords='cmmm cellular automata',
     url='https://github.com/youtissoum/py-machine',
     author='youtissoum',
+    author_email='youtissoum@outlook.fr',
     license='MIT',
     packages=['Python_Machine'],
     include_package_data=True

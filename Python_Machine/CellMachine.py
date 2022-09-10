@@ -12,6 +12,8 @@ SUBTICKING_ORDER: list[TickedCell] = (Generator, C_Spinner, CC_Spinner, Mover)
 SUBTICKING_DIRECTION = (Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN)
 CELLS: list[Cell] = [Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash]
 
+DEFAULT_TEXTURE_PATH = __file__.removesuffix("CellMachine.py").replace("\\", "/") + "textures/"
+
 class CellMachine():
     cells: Grid = Grid(1, 1)
 
@@ -34,8 +36,8 @@ class CellMachine():
 
     ## SETUP
     def __init__(self, preview_scale = 2) -> None:
-        self.width = 0
-        self.height = 0
+        self.width = 1
+        self.height = 1
         self.cells = Grid(1, 1)
         self.placeables = []
         self.name = ""
@@ -45,7 +47,24 @@ class CellMachine():
 
         self.resetCells = []
 
-        self.change_size((1, 1))
+        self.change_textures()
+
+    def change_textures(self, TEXTURE_PATH=DEFAULT_TEXTURE_PATH):
+        self.TEXTURE_PATH = TEXTURE_PATH
+
+        self.bg = Image.open(f'{TEXTURE_PATH}background.png')
+        self.generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.FLIP_TOP_BOTTOM)
+
+        self.change_size((self.width, self.height))
 
     def do_nothing(self):
         pass
@@ -168,7 +187,7 @@ class CellMachine():
 
     def change_size(self, size: tuple[int, int]):
         """
-        DO. NOT. USE.
+        this is an internal function and should not be used
         """
 
         width = self.width * self.TEXTURE_SIZE

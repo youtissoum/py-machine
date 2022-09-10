@@ -1,3 +1,6 @@
-*/__pycache__/
+.pyc
 
-out.png
+/dist/
+
+/*.egg-info
+/*.egg

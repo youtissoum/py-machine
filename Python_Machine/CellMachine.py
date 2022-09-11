@@ -3,7 +3,7 @@ import math
 import operator
 import random
 import time
-from .base74 import b74_decode
+from .base74 import b74_decode, b74_encode
 from PIL import Image
 from .Enums import Direction
 from .Cell import *
@@ -45,7 +45,7 @@ class CellMachine():
 
         self.SCALE = preview_scale
 
-        self.resetCells = []
+        self.resetCells = Grid(1, 1)
 
         self.change_textures()
 
@@ -69,7 +69,7 @@ class CellMachine():
     def do_nothing(self):
         pass
 
-    def parse_v1(self, code_str: str) -> tuple[Grid, Grid, str]:
+    def parse_v1(self, code_str: str) -> tuple[Grid, list[tuple[int, int]], str]:
         code: list[str] = code_str.split(";")
 
         width = int(code[1])
@@ -100,7 +100,7 @@ class CellMachine():
 
         return((parsedCells, parsedPlaceables, code[5]))
 
-    def parse_v3(self, code_str: str) -> tuple[Grid, Grid, str]:
+    def parse_v3(self, code_str: str) -> tuple[Grid, list[tuple[int, int]], str]:
         arguments = code_str.split(';')
 
         rawCells: list[tuple[int, int]] = []
@@ -184,6 +184,90 @@ class CellMachine():
         self.change_size((self.width, self.height))
 
         self.resetCells = level[0]
+
+    def _save_v3(self, topLeft, bottomRight) -> str:
+        """
+        interal function that needs some data to work, use `save_v3` instead
+        """
+
+        output = f"V3;{b74_encode(self.width)};{b74_encode(self.height)};"
+
+        cellData = [None] * (((bottomRight[0] + 1) - topLeft[0]) * ((topLeft[1] + 1) - bottomRight[1]))
+        dataIndex = 0
+
+        y = bottomRight[1]
+        while y <= topLeft[1]:
+
+            x = topLeft[0]
+            while x <= bottomRight[0]:
+                if (x, y) in self.placeables:
+                    cellData[(x - topLeft[0]) + ((y - bottomRight[1]) * (bottomRight[0] + 1 - topLeft[0]))] = 73
+                else:
+                    cellData[(x - topLeft[0]) + ((y - bottomRight[1]) * (bottomRight[0] + 1 - topLeft[0]))] = 72
+
+                x += 1
+
+            y += 1
+
+        print(cellData)
+
+        for cell in self.resetCells.cells:
+            cellData[(cell.x - topLeft[0]) + ((cell.y - bottomRight[1]) * ((bottomRight[0] + 1) - topLeft[0]))] += (2 * cell.CELL_ID) + (18 * cell.direction) - 72
+
+        matchLength = 0
+        maxMatchLength = 0
+        maxMatchOffset = 0
+
+        breakpoint()
+
+        while dataIndex < len(self.resetCells.cells):
+            maxMatchLength = 0
+            matchOffset = 1
+            while matchOffset <= dataIndex:
+
+                matchLength = 0
+                while dataIndex + matchLength < len(self.resetCells.cells) and cellData[dataIndex + matchLength] == cellData[dataIndex + matchLength - matchOffset]:
+                    matchLength += 1
+                    if matchLength > maxMatchLength:
+                        maxMatchLength = matchLength
+                        maxMatchOffset = matchOffset - 1
+                
+                matchOffset += 1
+
+            breakpoint()
+
+            if maxMatchLength > 3:
+                if len(b74_encode(maxMatchLength)) == 1:
+                    if len(b74_encode(maxMatchOffset)) == 1:
+                        if maxMatchLength > 3:
+                            output += f"){b74_encode(maxMatchOffset)}{b74_encode(maxMatchLength)}"
+                            dataIndex += maxMatchLength - 1
+                        else:
+                            output += b74_encode(cellData[dataIndex])
+
+                    else:
+                        if maxMatchLength > 3 + len(b74_encode(maxMatchOffset)):
+                            output += f"({b74_decode(maxMatchOffset)}){b74_encode(maxMatchLength)}"
+                        else:
+                            output += b74_encode(cellData[dataIndex])
+
+                else:
+                    output += f"({b74_encode(maxMatchOffset)}({b74_encode(maxMatchLength)})"
+                    dataIndex += maxMatchLength - 1
+
+            else:
+                output += b74_encode(cellData[dataIndex])
+
+            maxMatchLength = 0
+            dataIndex += 1
+
+        return output
+
+    def save_v3(self) -> str:
+        """
+        saves the level as a v3 code, warning: it uses the resetCells variables so if you have overwritten the cells variable set resetCells to it
+        """
+        return self._save_v3((0, self.height - 1), (self.width - 1, 0))
 
     def change_size(self, size: tuple[int, int]):
         """

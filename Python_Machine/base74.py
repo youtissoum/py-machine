@@ -12,17 +12,14 @@ def b74_decode(chars: str, /) -> int:
 
     return result
 
-import base64
-import math
 def b74_encode(input: int) -> str:
     result = ""
 
+    if input < 74:
+        return b74_key[round(input % 74)]
+
     while input > 0:
-        if input > 74:
-            result = result + b74_key[math.floor(input/len(b74_key))]
-            input -= math.floor(input/len(b74_key))*len(b74_key)
-        else:
-            result = result + b74_key[input]
-            input = 0
+        result = f"{b74_key[round(input % 74)]}{result}"
+        input = round(input / 74)
 
     return result

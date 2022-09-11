@@ -11,3 +11,18 @@ def b74_decode(chars: str, /) -> int:
             result += b74_char
 
     return result
+
+import base64
+import math
+def b74_encode(input: int) -> str:
+    result = ""
+
+    while input > 0:
+        if input > 74:
+            result = result + b74_key[math.floor(input/len(b74_key))]
+            input -= math.floor(input/len(b74_key))*len(b74_key)
+        else:
+            result = result + b74_key[input]
+            input = 0
+
+    return result

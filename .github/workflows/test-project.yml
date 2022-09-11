@@ -1,0 +1,31 @@
+name: Test Python Package
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install package
+        uses: poetry install
+
+      - name: Test with pytest
+        uses: poetry run pytest

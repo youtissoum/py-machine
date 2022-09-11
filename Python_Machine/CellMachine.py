@@ -23,16 +23,16 @@ class CellMachine():
     TEXTURE_SIZE = 16
 
     bg = Image.open(f'{TEXTURE_PATH}background.png')
-    generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.FLIP_TOP_BOTTOM)
-    C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-    CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-    mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.FLIP_TOP_BOTTOM)
-    slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.FLIP_TOP_BOTTOM)
-    push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.FLIP_TOP_BOTTOM)
-    immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.FLIP_TOP_BOTTOM)
-    enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.FLIP_TOP_BOTTOM)
-    trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.FLIP_TOP_BOTTOM)
-    placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.FLIP_TOP_BOTTOM)
+    generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
     ## SETUP
     def __init__(self, preview_scale = 2) -> None:
@@ -53,16 +53,16 @@ class CellMachine():
         self.TEXTURE_PATH = TEXTURE_PATH
 
         self.bg = Image.open(f'{TEXTURE_PATH}background.png')
-        self.generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.FLIP_TOP_BOTTOM)
-        self.placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.FLIP_TOP_BOTTOM)
+        self.generator = Image.open(f"{TEXTURE_PATH}generator.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.C_spinner = Image.open(f"{TEXTURE_PATH}C_spinner.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.CC_spinner = Image.open(f"{TEXTURE_PATH}CC_spinner.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.mover = Image.open(f"{TEXTURE_PATH}mover.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.slide = Image.open(f"{TEXTURE_PATH}slide.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.push = Image.open(f"{TEXTURE_PATH}push.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.immobile = Image.open(f"{TEXTURE_PATH}immobile.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.enemy = Image.open(f"{TEXTURE_PATH}enemy.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        self.placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         self.change_size((self.width, self.height))
 

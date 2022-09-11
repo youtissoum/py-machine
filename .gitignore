@@ -8,3 +8,4 @@ build/
 
 test.py
 __pycache__
+.pytest_cache

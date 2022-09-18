@@ -1,3 +1,6 @@
+import math
+
+
 b74_key = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!$%&+-.=?^{}"
 
 
@@ -14,14 +17,13 @@ def b74_decode(chars: str, /) -> int:
     return result
 
 
-def b74_encode(input: int) -> str:
-    result = ""
+def b74_encode(num: int) -> str:
+    if num < 74:
+        return str(b74_key[num % 74])
 
-    if input < 74:
-        return b74_key[round(input % 74)]
+    output = ""
+    while num > 0:
+        output = b74_key[math.floor(num % 74)] + output
+        num = math.floor(num / 74)
 
-    while input > 0:
-        result = f"{b74_key[round(input % 74)]}{result}"
-        input = round(input / 74)
-
-    return result
+    return output

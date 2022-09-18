@@ -2,7 +2,8 @@ from copy import deepcopy
 import math
 import operator
 import random
-from .base74 import b74_decode, b74_encode  # noqa: F401
+from tkinter import Toplevel
+from .base74 import b74_decode, b74_encode, b74_key  # noqa: F401
 from PIL import Image
 from .Enums import Direction
 from .Cell import Cell, TickedCell, Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash
@@ -196,21 +197,12 @@ class CellMachine():
         cellData: list[int] = [0] * (((bottomRight[0] + 1) - topLeft[0]) * ((topLeft[1] + 1) - bottomRight[1]))
         dataIndex = 0
 
-        y = bottomRight[1]
-        while y <= topLeft[1]:
-
-            x = topLeft[0]
-            while x <= bottomRight[0]:
+        for y in range(bottomRight[1], topLeft[1]+1):
+            for x in range(topLeft[0], bottomRight[0]+1):
                 if (x, y) in self.placeables:
                     cellData[(x - topLeft[0]) + ((y - bottomRight[1]) * (bottomRight[0] + 1 - topLeft[0]))] = 73
                 else:
                     cellData[(x - topLeft[0]) + ((y - bottomRight[1]) * (bottomRight[0] + 1 - topLeft[0]))] = 72
-
-                x += 1
-
-            y += 1
-
-        print(cellData)
 
         for cell in self.resetCells.cells:
             cellData[(cell.x - topLeft[0]) + ((cell.y - bottomRight[1]) * ((bottomRight[0] + 1) - topLeft[0]))] += (2 * cell.CELL_ID) + (18 * cell.direction)
@@ -220,24 +212,16 @@ class CellMachine():
         maxMatchLength = 0
         maxMatchOffset = 0
 
-        breakpoint()
-
-        while dataIndex < len(self.resetCells.cells):
+        while dataIndex < len(cellData):
             maxMatchLength = 0
-            matchOffset = 1
-            while matchOffset <= dataIndex:
-
+            for matchOffset in range(1, dataIndex+1):
                 matchLength = 0
-                while dataIndex + matchLength < len(self.resetCells.cells) \
+                while dataIndex + matchLength < len(cellData) \
                         and cellData[dataIndex + matchLength] == cellData[dataIndex + matchLength - matchOffset]:
                     matchLength += 1
                     if matchLength > maxMatchLength:
                         maxMatchLength = matchLength
                         maxMatchOffset = matchOffset - 1
-
-                matchOffset += 1
-
-            breakpoint()
 
             if maxMatchLength > 3:
                 if len(b74_encode(maxMatchLength)) == 1:
@@ -246,13 +230,14 @@ class CellMachine():
                             output += f"){b74_encode(maxMatchOffset)}{b74_encode(maxMatchLength)}"
                             dataIndex += maxMatchLength - 1
                         else:
-                            output += b74_encode(cellData[dataIndex])
+                            output += b74_key[cellData[dataIndex]]
 
                     else:
                         if maxMatchLength > 3 + len(b74_encode(maxMatchOffset)):
                             output += f"({b74_encode(maxMatchOffset)}){b74_encode(maxMatchLength)}"
+                            dataIndex += maxMatchLength - 1
                         else:
-                            output += b74_encode(cellData[dataIndex])
+                            output += b74_key[cellData[dataIndex]]
 
                 else:
                     output += f"({b74_encode(maxMatchOffset)}({b74_encode(maxMatchLength)})"
@@ -264,12 +249,12 @@ class CellMachine():
             maxMatchLength = 0
             dataIndex += 1
 
-        return output
+        return output + ";;"
 
     def save_v3(self) -> str:
         """
         saves the level as a v3 code, warning: it uses the resetCells variables so if you have overwritten the cells variable set resetCells to it
-        Currently broken
+        Currently slow
         """
         return self._save_v3((0, self.height - 1), (self.width - 1, 0))
 

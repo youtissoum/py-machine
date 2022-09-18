@@ -2,7 +2,6 @@ from copy import deepcopy
 import math
 import operator
 import random
-from tkinter import Toplevel
 from .base74 import b74_decode, b74_encode, b74_key  # noqa: F401
 from PIL import Image
 from .Enums import Direction

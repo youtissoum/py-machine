@@ -269,6 +269,7 @@ class CellMachine():
     def save_v3(self) -> str:
         """
         saves the level as a v3 code, warning: it uses the resetCells variables so if you have overwritten the cells variable set resetCells to it
+        Currently broken
         """
         return self._save_v3((0, self.height - 1), (self.width - 1, 0))
 
@@ -317,8 +318,8 @@ class CellMachine():
 
     # TICKING
 
-    def get_cell_at_location(x, y):
-        pass
+    def get_cell_at_location(self, x, y):
+        return self.cells.get(x, y)
 
     def tick(self, amount=1):
         for i in range(amount):

@@ -25,13 +25,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
-    - name: Install poetry
-      uses: snok/install-poetry@v1
-    - name: Install and build package
+        python-version: '3.10'
+    - name: Install package dependencies
       run : |
-            poetry install
-            poetry build
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+    - name: Build package
+      run: python -m build
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
       with:

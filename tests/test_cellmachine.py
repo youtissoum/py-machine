@@ -36,7 +36,7 @@ def test_import_manticore_v3():
 def test_export_manticore():
     cellmachine = CellMachine()
     cellmachine.parse_code("V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);Manticore V1;;0")
-    assert cellmachine.save_v3() == "V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);Manticore V1;;0", "Level did not save correctly"
+    assert cellmachine.save_v3() == "V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);;", "Level did not save correctly"
 
 manticore_ticking_result = [(4, 0, (44, 46)), (4, 3, (45, 46)), (4, 0, (46, 46)), (4, 0, (47, 46)), (4, 2, (48, 46)), (4, 0, (49, 46)), (4, 1, (43, 47)), (4, 0, (44, 47)), (1, 3, (45, 47)), (4, 0, (46, 47)), (5, 1, (47, 47)), (4, 2, (48, 47)), (4, 2, (49, 47)), (4, 3, (50, 47)), (4, 1, (51, 47)), (4, 1, (44, 48)), (4, 1, (45, 48)), (4, 1, (46, 48)), (4, 0, (47, 48)), (4, 0, (48, 48)), (5, 1, (49, 48)), (4, 0, (50, 48)), (4, 3, (51, 48)), (6, 1, (44, 49)), (0, 0, (45, 49)), (0, 0, (47, 49)), (4, 3, (49, 49)), (4, 1, (50, 49)), (4, 3, (45, 50)), (6, 0, (47, 50)), (7, 0, (48, 50)), (6, 0, (49, 50)), (6, 0, (48, 51)), (6, 1, (46, 49)), (6, 1, (48, 49))]
 def test_manticore_ticking():

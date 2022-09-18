@@ -7,6 +7,7 @@ from PIL import Image
 from .Enums import Direction
 from .Cell import Cell, TickedCell, Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash
 from .Grid import Grid
+from .level_save import _save_v3
 
 SUBTICKING_ORDER: list[type[TickedCell]] = [Generator, C_Spinner, CC_Spinner, Mover]
 SUBTICKING_DIRECTION = (Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN)
@@ -253,9 +254,9 @@ class CellMachine():
     def save_v3(self) -> str:
         """
         saves the level as a v3 code, warning: it uses the resetCells variables so if you have overwritten the cells variable set resetCells to it
-        Currently slow
+        Quite slow
         """
-        return self._save_v3((0, self.height - 1), (self.width - 1, 0))
+        return _save_v3(self.height - 1, self.width - 1, self.width, self.height, self.resetCells.cells, self.placeables, f"V3;{b74_encode(self.width)};{b74_encode(self.height)};")
 
     def change_size(self, size: tuple[int, int]):
         """

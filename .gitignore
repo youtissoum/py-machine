@@ -8,3 +8,5 @@ test.py
 htmlcov
 .tox
 build/
+**/*.pyd
+**/*.c

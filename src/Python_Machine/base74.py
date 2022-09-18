@@ -1,5 +1,6 @@
 b74_key = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!$%&+-.=?^{}"
 
+
 def b74_decode(chars: str, /) -> int:
     result = 0
 
@@ -11,6 +12,7 @@ def b74_decode(chars: str, /) -> int:
             result += b74_char
 
     return result
+
 
 def b74_encode(input: int) -> str:
     result = ""

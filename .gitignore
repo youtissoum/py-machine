@@ -1,12 +1,3 @@
-.pyc
-
-/dist/
-
-/*.egg-info
-/*.egg
-build/
-
-test.py
-__pycache__
-.pytest_cache
-poetry.lock
+**/__pycache__/
+**/Python_Machine.egg-info
+.mypy_cache

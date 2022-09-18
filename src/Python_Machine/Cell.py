@@ -2,24 +2,8 @@ from .Enums import Direction
 from copy import deepcopy
 
 from .Utils import get_opposite_direction, get_loc_from_direction
+from .Grid import Grid
 
-class Grid():
-    width = 0
-    height = 0
-    cells = []
-
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-
-        self.cells = []
-
-    def get(self, x, y):
-        for cell in self.cells:
-            if cell.x == x and cell.y == y:
-                return cell
-
-        return None
 
 class Cell():
     CELL_ID = -1
@@ -57,9 +41,11 @@ class Cell():
         self.y = y
         self.direction = direction
 
+
 class TickedCell(Cell):
     def step(self, grid: Grid):
         raise NotImplementedError("The stepping function has not been implemented")
+
 
 class Generator(TickedCell):
     CELL_ID = 0
@@ -80,12 +66,13 @@ class Generator(TickedCell):
             move_result, grid, bias = cell_at_position.move_in_direction(self.direction, grid, 0)
             if not move_result or bias < 0:
                 return grid
-        
+
         new_cell.x = cell_position[0]
         new_cell.y = cell_position[1]
         grid.cells.append(new_cell)
 
         return grid
+
 
 class C_Spinner(TickedCell):
     CELL_ID = 1
@@ -117,6 +104,7 @@ class C_Spinner(TickedCell):
 
         return grid
 
+
 class CC_Spinner(TickedCell):
     CELL_ID = 2
     CELL_NAME = "cc_spinner"
@@ -147,6 +135,7 @@ class CC_Spinner(TickedCell):
 
         return grid
 
+
 class Mover(TickedCell):
     CELL_ID = 3
     CELL_NAME = "mover"
@@ -163,20 +152,23 @@ class Mover(TickedCell):
         result, grid, bias = self.move_in_direction(self.direction, grid)
         return grid
 
+
 class Slide(Cell):
     CELL_ID = 4
     CELL_NAME = "slide"
 
     def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
         if self.direction != direction and \
-            self.direction != get_opposite_direction(direction):
+                self.direction != get_opposite_direction(direction):
             return False, grid, 0
         else:
             return super().move_in_direction(direction, grid, bias, self)
 
+
 class Push(Cell):
     CELL_ID = 5
     CELL_NAME = "push"
+
 
 class Immobile(Cell):
     CELL_ID = 6
@@ -184,6 +176,7 @@ class Immobile(Cell):
 
     def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
         return False, grid, 0
+
 
 class Enemy(Cell):
     CELL_ID = 7
@@ -196,11 +189,12 @@ class Enemy(Cell):
         grid.cells.remove(self)
         return True, grid, bias
 
+
 class Trash(Cell):
     CELL_ID = 8
     CELL_NAME = "trash"
 
-    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell: Cell=None) -> tuple[bool, Grid, int]:
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell: Cell | None = None) -> tuple[bool, Grid, int]:
         if previous_cell:
             grid.cells.remove(previous_cell)
 

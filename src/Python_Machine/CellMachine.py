@@ -1,18 +1,19 @@
-from copy import copy
+from copy import deepcopy
 import math
 import operator
 import random
-import time
-from .base74 import b74_decode, b74_encode
+from .base74 import b74_decode, b74_encode # noqa: F401
 from PIL import Image
 from .Enums import Direction
-from .Cell import *
+from .Cell import Cell, TickedCell, Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash
+from .Grid import Grid
 
-SUBTICKING_ORDER: list[TickedCell] = (Generator, C_Spinner, CC_Spinner, Mover)
+SUBTICKING_ORDER: list[type[TickedCell]] = [Generator, C_Spinner, CC_Spinner, Mover]
 SUBTICKING_DIRECTION = (Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN)
-CELLS: list[Cell] = [Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash]
+CELLS: list[type[Cell]] = [Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash]
 
 DEFAULT_TEXTURE_PATH = __file__.removesuffix("CellMachine.py").replace("\\", "/") + "textures/"
+
 
 class CellMachine():
     cells: Grid = Grid(1, 1)
@@ -34,12 +35,12 @@ class CellMachine():
     trash = Image.open(f"{TEXTURE_PATH}trash.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
     placeable = Image.open(f"{TEXTURE_PATH}placeable.png").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
-    ## SETUP
-    def __init__(self, preview_scale = 2) -> None:
+    # SETUP
+    def __init__(self, preview_scale=2) -> None:
         self.width = 1
         self.height = 1
         self.cells = Grid(1, 1)
-        self.placeables = []
+        self.placeables: list[tuple[int, int]] = []
         self.name = ""
         self.tickAmount = 0
 
@@ -78,7 +79,7 @@ class CellMachine():
         # print(width, height)
 
         cells: list[str] = code[4].split(',')
-        
+
         parsedCells: Grid = Grid(width, height)
 
         if cells:
@@ -95,10 +96,10 @@ class CellMachine():
         if placeables[0] != '':
             for placeable_str in placeables:
                 # x, y
-                placeable: tuple[int, int] = tuple(map(int, placeable_str.split('.')))
-                parsedPlaceables.append(placeable)
+                placeable: tuple[int, int] = tuple(map(int, placeable_str.split('.'))) # type: ignore
+                parsedPlaceables.append(tuple(placeable)) # type: ignore
 
-        return((parsedCells, parsedPlaceables, code[5]))
+        return ((parsedCells, parsedPlaceables, code[5]))
 
     def parse_v3(self, code_str: str) -> tuple[Grid, list[tuple[int, int]], str]:
         arguments = code_str.split(';')
@@ -163,7 +164,7 @@ class CellMachine():
             cellDirection = math.floor(rawCell[0] / 18)
             newCells.cells.append(CELLS[cellType](cellX, cellY, cellDirection))
 
-        return((newCells, placeables, arguments[4]))
+        return ((newCells, placeables, arguments[4]))
 
     def parse_code(self, code: str):
         if code.startswith("V1"):
@@ -328,9 +329,9 @@ class CellMachine():
                     cells_to_tick: list[TickedCell] = []
                     for cell in self.cells.cells:
                         if cell_type_to_tick == Generator or cell_type_to_tick == Mover:
-                            cells_to_tick.append(cell) if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()
+                            cells_to_tick.append(cell) if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing() # type: ignore
                         else:
-                            cells_to_tick.append(cell) if cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()
+                            cells_to_tick.append(cell) if cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing() # type: ignore
 
                     if cells_to_tick == []:
                         continue
@@ -345,9 +346,10 @@ class CellMachine():
                         cells_to_tick = sorted(cells_to_tick, key=operator.attrgetter('y'), reverse=False)
 
                     for cell in cells_to_tick:
-                        if cell.tickNum != tickNum:
-                            self.cells = cell.step(self.cells)
-                            cell.tickNum = tickNum
+                        tickedver: TickedCell = cell # type: ignore
+                        if tickedver.tickNum != tickNum:
+                            self.cells = tickedver.step(self.cells)
+                            tickedver.tickNum = tickNum
             self.tickAmount += 1
 
     def reset(self):

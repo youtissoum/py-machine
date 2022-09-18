@@ -1,1 +1,0 @@
-This is a python project that allows you to run a cmmm simulation inside of python

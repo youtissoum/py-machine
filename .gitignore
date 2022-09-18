@@ -1,3 +1,5 @@
 **/__pycache__/
 **/Python_Machine.egg-info
 .mypy_cache
+.pytest_cache
+.coverage

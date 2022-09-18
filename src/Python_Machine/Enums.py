@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+
 class CellTypes(IntEnum):
     GENERATOR = 1,
     ROTATOR_CW = 2
@@ -10,6 +11,7 @@ class CellTypes(IntEnum):
     IMMOBILE = 7
     ENEMY = 8
     TRASH = 9
+
 
 class Direction(IntEnum):
     RIGHT = 0,

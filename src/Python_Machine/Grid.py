@@ -1,9 +1,7 @@
-from .Cell import Cell
-
 class Grid():
     width = 0
     height = 0
-    cells: list[Cell] = []
+    cells = []  # type: ignore
 
     def __init__(self, width, height):
         self.width = width

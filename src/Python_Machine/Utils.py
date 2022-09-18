@@ -1,7 +1,9 @@
 from .Enums import Direction
 
+
 def do_nothing():
     pass
+
 
 def get_opposite_direction(direction: Direction):
     direction_to_opposite = {
@@ -12,6 +14,7 @@ def get_opposite_direction(direction: Direction):
     }
 
     return direction_to_opposite[direction]
+
 
 def get_loc_from_direction(x, y, direction: Direction):
     new_x, new_y = x, y

@@ -2,7 +2,7 @@ from copy import deepcopy
 import math
 import operator
 import random
-from .base74 import b74_decode, b74_encode # noqa: F401
+from .base74 import b74_decode, b74_encode  # noqa: F401
 from PIL import Image
 from .Enums import Direction
 from .Cell import Cell, TickedCell, Generator, C_Spinner, CC_Spinner, Mover, Slide, Push, Immobile, Enemy, Trash
@@ -96,8 +96,8 @@ class CellMachine():
         if placeables[0] != '':
             for placeable_str in placeables:
                 # x, y
-                placeable: tuple[int, int] = tuple(map(int, placeable_str.split('.'))) # type: ignore
-                parsedPlaceables.append(tuple(placeable)) # type: ignore
+                placeable: tuple[int, int] = tuple(map(int, placeable_str.split('.')))  # type: ignore
+                parsedPlaceables.append(tuple(placeable))  # type: ignore
 
         return ((parsedCells, parsedPlaceables, code[5]))
 
@@ -193,7 +193,7 @@ class CellMachine():
 
         output = f"V3;{b74_encode(self.width)};{b74_encode(self.height)};"
 
-        cellData = [None] * (((bottomRight[0] + 1) - topLeft[0]) * ((topLeft[1] + 1) - bottomRight[1]))
+        cellData: list[int] = [0] * (((bottomRight[0] + 1) - topLeft[0]) * ((topLeft[1] + 1) - bottomRight[1]))
         dataIndex = 0
 
         y = bottomRight[1]
@@ -213,7 +213,8 @@ class CellMachine():
         print(cellData)
 
         for cell in self.resetCells.cells:
-            cellData[(cell.x - topLeft[0]) + ((cell.y - bottomRight[1]) * ((bottomRight[0] + 1) - topLeft[0]))] += (2 * cell.CELL_ID) + (18 * cell.direction) - 72
+            cellData[(cell.x - topLeft[0]) + ((cell.y - bottomRight[1]) * ((bottomRight[0] + 1) - topLeft[0]))] += (2 * cell.CELL_ID) + (18 * cell.direction)
+            cellData[(cell.x - topLeft[0]) + ((cell.y - bottomRight[1]) * ((bottomRight[0] + 1) - topLeft[0]))] -= 72
 
         matchLength = 0
         maxMatchLength = 0
@@ -227,12 +228,13 @@ class CellMachine():
             while matchOffset <= dataIndex:
 
                 matchLength = 0
-                while dataIndex + matchLength < len(self.resetCells.cells) and cellData[dataIndex + matchLength] == cellData[dataIndex + matchLength - matchOffset]:
+                while dataIndex + matchLength < len(self.resetCells.cells) \
+                        and cellData[dataIndex + matchLength] == cellData[dataIndex + matchLength - matchOffset]:
                     matchLength += 1
                     if matchLength > maxMatchLength:
                         maxMatchLength = matchLength
                         maxMatchOffset = matchOffset - 1
-                
+
                 matchOffset += 1
 
             breakpoint()
@@ -248,7 +250,7 @@ class CellMachine():
 
                     else:
                         if maxMatchLength > 3 + len(b74_encode(maxMatchOffset)):
-                            output += f"({b74_decode(maxMatchOffset)}){b74_encode(maxMatchLength)}"
+                            output += f"({b74_encode(maxMatchOffset)}){b74_encode(maxMatchLength)}"
                         else:
                             output += b74_encode(cellData[dataIndex])
 
@@ -292,7 +294,7 @@ class CellMachine():
         width = self.width
         height = self.height
 
-        width  *= self.TEXTURE_SIZE
+        width *= self.TEXTURE_SIZE
         height *= self.TEXTURE_SIZE
 
         img = deepcopy(self.prerendered_bg)
@@ -306,32 +308,33 @@ class CellMachine():
             img.paste(cell_to_paste.rotate(cell.direction * 90), (cell.x * self.TEXTURE_SIZE, cell.y * self.TEXTURE_SIZE))
 
         if self.SCALE == 0:
-            return(img)
+            return (img)
         else:
             nextWidth = math.floor(width * self.SCALE)
             nextHeight = math.floor(height * self.SCALE)
             scaledImg = img.resize(size=(nextWidth, nextHeight), resample=Image.Resampling.NEAREST)
-            return(scaledImg.transpose(1))
+            return (scaledImg.transpose(1))
 
-    ## TICKING
+    # TICKING
 
     def get_cell_at_location(x, y):
         pass
 
-    def tick(self, amount = 1):
+    def tick(self, amount=1):
         for i in range(amount):
             tickNum = random.randint(1, 1000)
             for cell_type_to_tick in SUBTICKING_ORDER:
                 # if cell_type_to_tick == C_Spinner or cell_type_to_tick == CC_Spinner:
                 #     self.view().show()
                 for cell_direction_to_tick in SUBTICKING_DIRECTION:
-                    ## GET CELLS OF DIRECTION
+                    # GET CELLS OF DIRECTION
                     cells_to_tick: list[TickedCell] = []
                     for cell in self.cells.cells:
                         if cell_type_to_tick == Generator or cell_type_to_tick == Mover:
-                            cells_to_tick.append(cell) if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing() # type: ignore
+                            if cell.direction == cell_direction_to_tick and cell.CELL_ID == cell_type_to_tick.CELL_ID:
+                                cells_to_tick.append(cell)  # type: ignore
                         else:
-                            cells_to_tick.append(cell) if cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing() # type: ignore
+                            cells_to_tick.append(cell) if cell.CELL_ID == cell_type_to_tick.CELL_ID else self.do_nothing()  # type: ignore
 
                     if cells_to_tick == []:
                         continue
@@ -346,7 +349,7 @@ class CellMachine():
                         cells_to_tick = sorted(cells_to_tick, key=operator.attrgetter('y'), reverse=False)
 
                     for cell in cells_to_tick:
-                        tickedver: TickedCell = cell # type: ignore
+                        tickedver: TickedCell = cell  # type: ignore
                         if tickedver.tickNum != tickNum:
                             self.cells = tickedver.step(self.cells)
                             tickedver.tickNum = tickNum

@@ -33,7 +33,7 @@ def test_import_manticore_v3():
 
     assert result == manticore_import_result, "Importing manticore with v3 encoding did not work"
 
-def test_export_manticore():
+def test_export_manticore_v3():
     cellmachine = CellMachine()
     cellmachine.parse_code("V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);Manticore V1;;0")
     assert cellmachine.save_v3() == "V3;1q;1q;{(0(!T)9r99J9(1o(1j)rJVJtJJ$r(1q(1j)$r99t9$(1p(1i)v1}1}(2O(1k){{${dfd(6X(1o)(1o(1p)(0(%h);;", "Level did not save correctly"

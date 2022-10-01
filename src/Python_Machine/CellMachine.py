@@ -191,11 +191,11 @@ class CellMachine():
         else:
             return
 
-        self.cells = None
-        self.width = None
-        self.height = None
-        self.placeables = None
-        self.name = None
+        self.cells = Grid(1, 1)
+        self.width = 1
+        self.height = 1
+        self.placeables = []
+        self.name = ""
 
         self.cells = level[0]
         self.width = self.cells.width

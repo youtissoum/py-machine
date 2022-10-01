@@ -186,7 +186,7 @@ class CellMachine():
 
         self.resetCells = level[0]
 
-    def _save_v3(self, topLeft, bottomRight):
+    def _save_v3(self, topLeft, bottomRight) -> str:
         output = f"V3;{b74_encode(self.width)};{b74_encode(self.height)};"
 
         cellData = [0] * (((bottomRight + 1) - 0) * ((topLeft + 1) - 0))
@@ -228,7 +228,7 @@ class CellMachine():
                 if len(b74_encode(maxMatchLength)) == 1:
                     if len(b74_encode(maxMatchOffset)) == 1:
                         if maxMatchLength > 3:
-                            output += f"){b74_encode(maxMatchOffset)}{b74_decode(maxMatchLength)}"
+                            output += f"){b74_encode(maxMatchOffset)}{b74_encode(maxMatchLength)}"
                             dataIndex += maxMatchLength - 1
                         else:
                             output += b74_key[cellData[dataIndex]]

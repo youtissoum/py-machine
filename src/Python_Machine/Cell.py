@@ -194,7 +194,7 @@ class Trash(Cell):
     CELL_ID = 8
     CELL_NAME = "trash"
 
-    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell: Cell | None = None) -> tuple[bool, Grid, int]:
+    def move_in_direction(self, direction, grid: Grid, bias=-1, previous_cell=None) -> tuple[bool, Grid, int]:
         if previous_cell:
             grid.cells.remove(previous_cell)
 

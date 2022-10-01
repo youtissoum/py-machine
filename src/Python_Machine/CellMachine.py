@@ -234,8 +234,6 @@ class CellMachine():
             cellData[(cell.x - 0) + ((cell.y - 0) * ((bottomRight + 1) - 0))] += (2 * cell.CELL_ID) + (18 * cell.direction)
             cellData[(cell.x - 0) + ((cell.y - 0) * ((bottomRight + 1) - 0))] -= 72
 
-        matchLength = 0
-        matchOffset = 0
         maxMatchLength = 0
         maxMatchOffset = 0
 

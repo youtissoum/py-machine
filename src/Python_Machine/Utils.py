@@ -6,6 +6,9 @@ def do_nothing():
 
 
 def get_opposite_direction(direction: Direction):
+    """
+    Gets the opposite direction of a Direction object
+    """
     direction_to_opposite = {
         Direction.RIGHT: Direction.LEFT,
         Direction.DOWN: Direction.UP,
@@ -16,16 +19,19 @@ def get_opposite_direction(direction: Direction):
     return direction_to_opposite[direction]
 
 
-def get_loc_from_direction(x, y, direction: Direction):
+def get_loc_from_direction(x, y, direction: Direction, *, movement_amount: int=1):
+    """
+    Gets a location in the direction going
+    """
     new_x, new_y = x, y
 
     if direction == Direction.RIGHT:
-        new_x += 1
+        new_x += movement_amount
     elif direction == Direction.LEFT:
-        new_x -= 1
+        new_x -= movement_amount
     elif direction == Direction.UP:
-        new_y += 1
+        new_y += movement_amount
     elif direction == Direction.DOWN:
-        new_y -= 1
+        new_y -= movement_amount
 
     return new_x, new_y

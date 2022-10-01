@@ -16,6 +16,9 @@ DEFAULT_TEXTURE_PATH = __file__.removesuffix("CellMachine.py").replace("\\", "/"
 
 
 class CellMachine():
+    """
+    A class that can be used like a cell machine level
+    """
     cells: Grid = Grid(1, 1)
 
     tickAmount = 0
@@ -51,6 +54,9 @@ class CellMachine():
         self.change_textures()
 
     def change_textures(self, TEXTURE_PATH=DEFAULT_TEXTURE_PATH):
+        """
+        Changes the path of the textures to a custom one (include '/' at the end)
+        """
         self.TEXTURE_PATH = TEXTURE_PATH
 
         self.bg = Image.open(f'{TEXTURE_PATH}background.png')
@@ -71,6 +77,9 @@ class CellMachine():
         pass
 
     def parse_v1(self, code_str: str) -> tuple[Grid, list[tuple[int, int]], str]:
+        """
+        Parses a v1 code and turns it into a tuple containing all the data
+        """
         code: list[str] = code_str.split(";")
 
         width = int(code[1])
@@ -102,6 +111,9 @@ class CellMachine():
         return ((parsedCells, parsedPlaceables, code[5]))
 
     def parse_v3(self, code_str: str) -> tuple[Grid, list[tuple[int, int]], str]:
+        """
+        Parses a v3 code and turns it into a tuple containing all the data
+        """
         arguments = code_str.split(';')
 
         rawCells: list[tuple[int, int]] = []
@@ -167,6 +179,9 @@ class CellMachine():
         return ((newCells, placeables, arguments[4]))
 
     def parse_code(self, code: str):
+        """
+        Parse a code in any format
+        """
         if code.startswith("V1"):
             level = self.parse_v1(code)
         elif code.startswith("V2"):
@@ -175,6 +190,12 @@ class CellMachine():
             level = self.parse_v3(code)
         else:
             return
+
+        self.cells = None
+        self.width = None
+        self.height = None
+        self.placeables = None
+        self.name = None
 
         self.cells = level[0]
         self.width = self.cells.width
@@ -186,7 +207,14 @@ class CellMachine():
 
         self.resetCells = level[0]
 
-    def _save_v3(self, topLeft, bottomRight) -> str:
+    def save_v3(self) -> str:
+        """
+        Saves the level as a v3 code
+        Currently very slow
+        """
+        topLeft = self.height - 1
+        bottomRight = self.width - 1
+
         output = f"V3;{b74_encode(self.width)};{b74_encode(self.height)};"
 
         cellData = [0] * (((bottomRight + 1) - 0) * ((topLeft + 1) - 0))
@@ -202,7 +230,7 @@ class CellMachine():
                 else:
                     cellData[(x - 0) + ((y - 0) * (bottomRight + 1 - 0))] = 72
 
-        for cell in self.resetCells.cells:
+        for cell in self.cells.cells:
             cellData[(cell.x - 0) + ((cell.y - 0) * ((bottomRight + 1) - 0))] += (2 * cell.CELL_ID) + (18 * cell.direction)
             cellData[(cell.x - 0) + ((cell.y - 0) * ((bottomRight + 1) - 0))] -= 72
 
@@ -252,16 +280,9 @@ class CellMachine():
 
         return output + ";;"
 
-    def save_v3(self) -> str:
-        """
-        saves the level as a v3 code, warning: it uses the resetCells variables so if you have overwritten the cells variable set resetCells to it
-        Quite slow
-        """
-        return self._save_v3(self.height - 1, self.width - 1)
-
     def change_size(self, size: tuple[int, int]):
         """
-        this is an internal function and should not be used
+        This is an internal function and should not be used
         """
 
         width = self.width * self.TEXTURE_SIZE
@@ -276,6 +297,9 @@ class CellMachine():
         self.prerendered_bg = img
 
     def view(self):
+        """
+        Turns the level into a PIL image
+        """
         all_cells = [self.generator, self.C_spinner, self.CC_spinner, self.mover, self.slide, self.push, self.immobile, self.enemy, self.trash]
 
         width = self.width
@@ -305,6 +329,9 @@ class CellMachine():
     # TICKING
 
     def get_cell_at_location(self, x, y):
+        """
+        Gets a cell at a location
+        """
         return self.cells.get(x, y)
 
     def tick(self, amount=1):
@@ -346,6 +373,9 @@ class CellMachine():
         self.cells = self.resetCells
 
     def unload(self):
+        """
+        Unloads all the images
+        """
         self.bg.close()
         self.generator.close()
         self.C_spinner.close()

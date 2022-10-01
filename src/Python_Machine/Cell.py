@@ -6,6 +6,9 @@ from .Grid import Grid
 
 
 class Cell():
+    """
+    A class defining the most basic of cells
+    """
     CELL_ID = -1
     CELL_NAME = "EMPTY"
 
@@ -43,6 +46,9 @@ class Cell():
 
 
 class TickedCell(Cell):
+    """
+    A cell but it contains the `step` function
+    """
     def step(self, grid: Grid):
         raise NotImplementedError("The stepping function has not been implemented")
 

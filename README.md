@@ -2,7 +2,7 @@
 
 Simulate Cell Machine inside python
 
-## Instalation
+## Installation
 
 ```bash
 $ pip install Python_Machine

@@ -5,6 +5,9 @@ b74_key = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!$%&+-.
 
 
 def b74_decode(chars: str, /) -> int:
+    """
+    Decodes the string from a base74 format
+    """
     result = 0
 
     for char in chars:
@@ -18,6 +21,9 @@ def b74_decode(chars: str, /) -> int:
 
 
 def b74_encode(num: int) -> str:
+    """
+    Encodes the string to a base74 format
+    """
     if num < 74:
         return str(b74_key[num % 74])
 

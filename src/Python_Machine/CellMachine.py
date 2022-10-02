@@ -209,8 +209,8 @@ class CellMachine():
 
     def save_v3(self) -> str:
         """
-        Saves the level as a v3 code
-        Currently very slow
+        Saves the level as a v3 code\n
+        slow
         """
         topLeft = self.height - 1
         bottomRight = self.width - 1
